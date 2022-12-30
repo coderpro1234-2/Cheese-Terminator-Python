@@ -13,4 +13,4 @@ Download The [Zip File](https://github.com/coderpro1234-2/Cheese-Terminator-Pyth
 In The Beta (The Current Version) When You Continue To the Next Level, If It Continuously Says "Well Done Press Enter To Continue" Then You Have One
 
 ## Are You Still Updating It?
-Yes, I Will Be Udating It Untill Further Notice
+Yes, I Will Be Updating It Untill Further Notice
