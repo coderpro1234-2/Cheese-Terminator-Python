@@ -287,8 +287,8 @@ while running:
         if started:
           started = False
           if level == []:
-            setnewlevel(Lv11,8)
-            #setnewlevel(Lv1,8)
+            #setnewlevel(Lv11,8)
+            setnewlevel(Lv1,8)
           elif level == Lv1:
             setnewlevel(Lv2,9)
           elif level == Lv2:
