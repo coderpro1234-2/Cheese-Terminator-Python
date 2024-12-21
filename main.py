@@ -3,109 +3,99 @@ import pygame
 from gamedata import *
 #Start
 pygame.init()
-lvldict = {0:lv1,1:lv2,2:lv3,3:lv4,4:lv5,5:lv6,6:lv7,7:lv8,8:lv9,9:lv10,10:lv11,11:lv12,12:lv13,13:lv14,14:lv15,15:lv16,16:lv17,17:lv18,18:lv19,19:lv20,20:lv21,21:lv22,22:lv23,23:lv24,24:lv25,25:lv26,26:lv27,27:lv28,28:lv29,29:lv30,30:lv31,31:lv32,32:lv33,33:lv34,34:lv35,35:lv36,36:lv37,37:lv38,38:lv39,39:lv40,40:lv41,41:lv42,42:lv43,43:lv44,44:lv45,45:lv46,46:lv47,47:lv48,48:lv49,49:lv50}
-ldv = list(lvldict.values())
 #Position/Game variables
-X = 400
-Y = 400
+DEBUG = False
+WIDTH = 400
+HEIGHT = 400
 cheeselist = []
 endlist = []
 mousepos = 0
-mousedir = 0
+mousedir = 3
 levelwidth = 0
 levelheight = 0
-blocksize = 40
+mouseOffsets = [-levelwidth,levelwidth,-1,1]
+blocksize = 30
 gamelist = []
-#level you want -2
-level = -1
+level = 1
+maxLevel = 50
 emptyblock = [1,2,3,4,5]
 paused = True
-started = True
+start = True
 reset = False
+end = False
 #Colo(u)r variables
 yellow = (255,255,0)
 black = (0,0,0)
+floor = (192,192,192)
+wall1 = (255,255,255)
+wall2 = (128,128,128)
 #Loop variables
 running = True
 #Screen variables
-display_surface = pygame.display.set_mode((X,Y))
-main_font = pygame.font.Font('assets/fonts/DOS-FONT.ttf', 32)
-start_text = main_font.render("Cheese Terminator",True,yellow,black)
-next_text = main_font.render("Well Done!",True,yellow,black)
-win_text = main_font.render("You Won!!! :D",True,yellow,black)
-main_font = pygame.font.Font('assets/fonts/DOS-FONT.ttf', 20)
-start_text2 = main_font.render("Press Enter To Start",True,yellow,black)
-start_text3 = main_font.render("Use Arrow Keys To Move",True,yellow,black)
-next_text2 = main_font.render("Press Enter To Continue",True,yellow,black)
-win_text2 = main_font.render("Press Enter To Play Again",True,yellow,black)
-reset_text = main_font.render("Are You Shure You Want To Restart?",True,yellow,black)
-reset_text2 = main_font.render("Press Enter To Continue",True,yellow,black)
-reset_text3 = main_font.render("Press The Arrow Keys To Cancel",True,yellow,black)
-textRect = start_text.get_rect()
-textRect.center = (X // 2, ((Y // 2)-30))
-textRect2 = start_text2.get_rect()
-textRect2.center = (X // 2, ((Y // 2)-3))
-textRect3 = start_text3.get_rect()
-textRect3.center = (X // 2, ((Y // 2)+18))
-textRectn = next_text.get_rect()
-textRectn.center = (X // 2, ((Y // 2)-15))
-textRectn2 = next_text2.get_rect()
-textRectn2.center = (X // 2, ((Y // 2)+15))
-textRectw = win_text.get_rect()
-textRectw.center = (X // 2, ((Y // 2)-15))
-textRectnw = win_text2.get_rect()
-textRectnw.center = (X // 2, ((Y // 2)+15))
-textRectr = reset_text.get_rect()
-textRectr.center = (X // 2, ((Y // 2)-15))
-textRectr2 = reset_text2.get_rect()
-textRectr2.center = (X // 2, ((Y // 2)))
-textRectr3 = reset_text3.get_rect()
-textRectr3.center = (X // 2, ((Y // 2)+15))
-M_0 = pygame.image.load("assets/textures/PNG_M_0.png")
-M_0 = pygame.transform.scale(M_0,(blocksize,blocksize))
-M_1 = pygame.image.load("assets/textures/PNG_M_1.png")
-M_1 = pygame.transform.scale(M_1,(blocksize,blocksize))
-M_2 = pygame.image.load("assets/textures/PNG_M_2.png")
-M_2 = pygame.transform.scale(M_2,(blocksize,blocksize))
-M_3 = pygame.image.load("assets/textures/PNG_M_3.png")
-M_3 = pygame.transform.scale(M_3,(blocksize,blocksize))
-C_0 = pygame.image.load("assets/textures/PNG_C_0.png")
-C_0 = pygame.transform.scale(C_0,(blocksize,blocksize))
-C_1 = pygame.image.load("assets/textures/PNG_C_1.png")
-C_1 = pygame.transform.scale(C_1,(blocksize,blocksize))
-P_0 = pygame.image.load("assets/textures/PNG_0.png")
-P_0 = pygame.transform.scale(P_0,(blocksize,blocksize))
-P_1 = pygame.image.load("assets/textures/PNG_1.png")
-P_1 = pygame.transform.scale(P_1,(blocksize,blocksize))
-P_2 = pygame.image.load("assets/textures/PNG_2.png")
-P_2 = pygame.transform.scale(P_2,(blocksize,blocksize))
-ICON = pygame.image.load("assets/icon.png")
+screen = pygame.display.set_mode((WIDTH,HEIGHT))
+mouseBase = pygame.image.load("assets/images/mouse.png")
+mouseUp = mouseBase.subsurface((0,270,30,30))
+mouseDown = mouseBase.subsurface((0,90,30,30))
+mouseLeft = mouseBase.subsurface((0,180,30,30))
+mouseRight = mouseBase.subsurface((0,0,30,30))
+cheeseBase = pygame.image.load("assets/images/cheese.png")
+cheeseWhole = cheeseBase.subsurface((0,30,30,30))
+cheeseSlice = cheeseBase.subsurface((0,0,30,30))
+targetBase = pygame.image.load("assets/images/goal.png")
+targetRed = targetBase.subsurface((0,0,30,30))
+targetBlue = targetBase.subsurface((0,30,30,30))
+icon = pygame.image.load("assets/icon.png")
 #Screen display
 pygame.display.set_caption("Cheese Terminator")
-pygame.display.set_icon(ICON)
+pygame.display.set_icon(icon)
 pygame.display.update()
+#Classes
+class Text():
+  def __init__(self, text, pos, size, color):
+    self.text = text
+    self.pos = pos
+    self.size = size
+    self.color = color
+    self.font = pygame.font.Font('assets/font.ttf', size)
+    self.render = self.font.render(self.text, True, self.color)
+    self.rect = self.render.get_rect()
+    self.rect.center = self.pos
+  def draw(self):
+    screen.blit(self.render, self.rect)
+#Text
+start1 = Text("Cheese Terminator", (WIDTH // 2, ((HEIGHT // 2)-30)), 32, yellow)
+start2 = Text("Press Enter To Start", (WIDTH // 2, ((HEIGHT // 2)-3)), 20, yellow)
+start3 = Text("Use Arrow Keys To Move", (WIDTH // 2, ((HEIGHT // 2)+18)), 20, yellow)
+next1 = Text("Well Done!", (WIDTH // 2, ((HEIGHT // 2)-15)), 32, yellow)
+next2 = Text("Press Enter To Continue", (WIDTH // 2, ((HEIGHT // 2)+15)), 20, yellow)
+win1 = Text("You Won!!! :D", (WIDTH // 2, ((HEIGHT // 2)-15)), 32, yellow)
+win2 = Text("Press Enter To Play Again", (WIDTH // 2, ((HEIGHT // 2)+15)), 20, yellow)
+reset1 = Text("Restart The Level?", (WIDTH // 2, ((HEIGHT // 2)-30)), 32, yellow)
+reset2 = Text("Press Enter To Restart", (WIDTH // 2, ((HEIGHT // 2)-3)), 20, yellow)
+reset3 = Text("Press Any Arrow Key To Cancel", (WIDTH // 2, ((HEIGHT // 2)+18)), 20, yellow)
 #Functions
-def setnewlevel(lvl):
-  global endlist, cheeselist, mousepos, display_surface, levelwidth, levelheight, gamelist, mousedir, started
-  started = False
+def updateLevel(lvl):
+  global endlist, cheeselist, mousepos, screen, levelwidth, levelheight, gamelist, mousedir, mouseOffsets
   pygame.display.set_caption("Cheese Terminator - Level "+str(ldv.index(lvl)+1))
   level = lvl[1:]
   endlist = []
   cheeselist = []
-  drawx = 0
-  drawy = 0
   drawid = 0
-  mousedir = 0
+  mousedir = 3
   width = lvl[0]
   height = len(level) / width
-  display_surface = pygame.display.set_mode((round(width*blocksize),round(height*blocksize)))
+  if height % 1 != 0:
+    raise ValueError("Invalid level data")
+  else:
+    height = int(height)
+  if DEBUG:
+    print(f'Level: {str(ldv.index(lvl)+1)}, Width: {width}, Height: {height}')
+  screen = pygame.display.set_mode((round(width*blocksize),round(height*blocksize)))
   levelwidth = width
   levelheight = height
-  i = 0
-  while i < height:
-    drawx = 0
-    e = 0
-    while e < width:
+  mouseOffsets = [-levelwidth,levelwidth,-1,1]
+  for _ in range(levelheight):
+    for _ in range(levelwidth):
       if level[drawid] == 2:
         endlist.append(drawid)
       elif level[drawid] == 3:
@@ -115,85 +105,90 @@ def setnewlevel(lvl):
       elif level[drawid] == 5:
         cheeselist.append(drawid)
         endlist.append(drawid)
-      drawx = drawx + 30
       drawid = drawid + 1
-      e = e + 1
-    i = i + 1
-    drawy = drawy + 30
   gamelist = level
-def drawscreen():
-  global levelwidth, levelheight, cheeselist, endlist, display_surface, gamelist
-  if paused or reset:
+def drawScreen():
+  if paused:
     return
-  cheese = [2,5]
-  drawx = 0
-  drawy = 0
   drawid = 0
-  i = 0
-  while i < levelheight:
-    e = 0
+  for drawy in range(levelheight):
     drawx = 0
-    while e < levelwidth:
-      w = 0
+    for drawx in range(levelwidth):
       if gamelist[drawid] == 0:
-        w = 1
-        display_surface.blit(P_1,(drawx*blocksize,drawy*blocksize))
-      if gamelist[drawid] == 1:
-        w = 1
-        display_surface.blit(P_0,(drawx*blocksize,drawy*blocksize))
-      if gamelist[drawid] in cheese:
-        w = 1
-        if drawid in cheeselist:
-          display_surface.blit(C_1,(drawx*blocksize,drawy*blocksize))
-        else:
-          display_surface.blit(P_2,(drawx*blocksize,drawy*blocksize))
+        pygame.draw.rect(screen,floor,(drawx*blocksize,drawy*blocksize,blocksize,blocksize))
+        for offset in mouseOffsets:
+          if isLegalOffset(drawid,offset):
+            if offset == -levelwidth:
+              pygame.draw.line(screen,wall1,(drawx*blocksize,drawy*blocksize),(drawx*blocksize+blocksize,drawy*blocksize),2)
+            elif offset == levelwidth:
+              pygame.draw.line(screen,wall2,(drawx*blocksize,drawy*blocksize+blocksize-2),(drawx*blocksize+blocksize,drawy*blocksize+blocksize-2),2)
+            elif offset == -1:
+              pygame.draw.line(screen,wall1,(drawx*blocksize,drawy*blocksize),(drawx*blocksize,drawy*blocksize+blocksize),2)
+            else:
+              pygame.draw.line(screen,wall2,(drawx*blocksize+blocksize-2,drawy*blocksize),(drawx*blocksize+blocksize-2,drawy*blocksize+blocksize),2)
+      else:
+        pygame.draw.rect(screen,floor,(drawx*blocksize,drawy*blocksize,blocksize,blocksize))
       if drawid in cheeselist:
-        w = 1
-        if gamelist[drawid] in cheese:
-          display_surface.blit(C_1,(drawx*blocksize,drawy*blocksize))
+        if drawid in endlist:
+          screen.blit(cheeseSlice,(drawx*blocksize,drawy*blocksize))
         else:
-          display_surface.blit(C_0,(drawx*blocksize,drawy*blocksize))
+          screen.blit(cheeseWhole,(drawx*blocksize,drawy*blocksize))
+      elif drawid in endlist:
+        screen.blit(targetRed,(drawx*blocksize,drawy*blocksize))
       if mousepos == drawid:
-        w = 1
         if mousedir == 0:
-          display_surface.blit(M_0,(drawx*blocksize,drawy*blocksize))
+          screen.blit(mouseUp,(drawx*blocksize,drawy*blocksize))
         elif mousedir == 1:
-          display_surface.blit(M_1,(drawx*blocksize,drawy*blocksize))
+          screen.blit(mouseDown,(drawx*blocksize,drawy*blocksize))
         elif mousedir == 2:
-          display_surface.blit(M_2,(drawx*blocksize,drawy*blocksize))
-        elif mousedir == 3:
-          display_surface.blit(M_3,(drawx*blocksize,drawy*blocksize))
+          screen.blit(mouseLeft,(drawx*blocksize,drawy*blocksize))
         else:
-          display_surface.blit(M_0,(drawx*blocksize,drawy*blocksize))
-      if w == 0:
-        display_surface.blit(P_0,(drawx*blocksize,drawy*blocksize))
+          screen.blit(mouseRight,(drawx*blocksize,drawy*blocksize))
       drawid = drawid + 1
-      e = e + 1
-      drawx = drawx + 1
-    i = i + 1
-    drawy = drawy + 1
-def checblock(dir,pos):
-  if dir == "u":
-    try:
-      return gamelist[pos-levelwidth]
-    except:
-      return "error"
-  elif dir == "d":
-    try:
-      return gamelist[pos+levelwidth]
-    except:
-      return "error"
-  elif dir == "l":
-    if pos % levelwidth == 0:
-      return "error"
-    else:
-      return gamelist[pos-1]
-  elif dir == "r":
-    if pos % levelwidth == (levelwidth-1):
-      return "error"
-    else:
-      return gamelist[pos+1]
-def checkifwon():
+def drawPause(nextlevel=False):
+  if not paused:
+    return
+  screen = pygame.display.set_mode((400,400))
+  screen.fill(black)
+  if nextlevel:
+    next1.draw()
+    next2.draw()
+  elif start:
+    start1.draw()
+    start2.draw()
+    start3.draw()
+  elif reset:
+    reset1.draw()
+    reset2.draw()
+    reset3.draw()
+  elif end:
+    win1.draw()
+    win2.draw()
+def isLegalOffset(pos,off,checkWall=True):
+  newpos = pos+off
+  if abs(off) == levelwidth:
+    if newpos < 0 or newpos >= len(gamelist):
+      return False
+  elif off == -1:
+    if newpos+1 % levelwidth == 0:
+      return False
+  elif off == 1:
+    if newpos % levelwidth == 0:
+      return False
+  if gamelist[newpos] == 0 and checkWall:
+    return False
+  return True
+def checkBlock(pos,dir):
+  if not isLegalOffset(pos,mouseOffsets[dir]):
+    return 0
+  if pos+mouseOffsets[dir] in cheeselist:
+    if isLegalOffset(pos,mouseOffsets[dir]*2):
+      if pos+(mouseOffsets[dir]*2) in cheeselist or gamelist[pos+(mouseOffsets[dir]*2)] == 0:
+        return 0
+      return 2
+    return 0
+  return 1
+def checkWon():
   q = 0
   a = 0
   while q < len(endlist):
@@ -202,121 +197,103 @@ def checkifwon():
     q = q + 1
   return a == q
 #Main loop
-display_surface.blit(start_text, textRect)
-display_surface.blit(start_text2, textRect2)
-display_surface.blit(start_text3, textRect3)
+drawPause()
 while running:
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       running = False
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_UP:
-        mousedir = 3
-        if not checblock("u",mousepos) == "error":
-          if checblock("u",mousepos) in emptyblock:
-            if mousepos-levelwidth in cheeselist:
-              if checblock("u",mousepos-levelwidth) in emptyblock:
-                if not (mousepos-levelwidth-levelwidth in cheeselist):
-                  cheeselist[cheeselist.index(mousepos-levelwidth)] = cheeselist[cheeselist.index(mousepos-levelwidth)]-levelwidth
-                  mousepos = mousepos-levelwidth
-            else:
-              mousepos = mousepos-levelwidth
-          elif mousepos-levelwidth in cheeselist:
-            if checblock("u",mousepos-levelwidth) in emptyblock:
-              if not (mousepos-levelwidth-levelwidth in cheeselist):
-                cheeselist[cheeselist.index(mousepos-levelwidth)] = cheeselist[cheeselist.index(mousepos-levelwidth)]-levelwidth
-                mousepos = mousepos-levelwidth
-      if event.key == pygame.K_DOWN:
-        mousedir = 1
-        if not checblock("d",mousepos) == "error":
-          if checblock("d",mousepos) in emptyblock:
-            if mousepos+levelwidth in cheeselist:
-              if checblock("d",mousepos+levelwidth) in emptyblock:
-                if not (mousepos+levelwidth+levelwidth in cheeselist):
-                  cheeselist[cheeselist.index(mousepos+levelwidth)] = cheeselist[cheeselist.index(mousepos+levelwidth)]+levelwidth
-                  mousepos = mousepos+levelwidth
-            else:
-              mousepos = mousepos+levelwidth
-          elif mousepos+levelwidth in cheeselist:
-            if checblock("d",mousepos+levelwidth) in emptyblock:
-              if not (mousepos+levelwidth+levelwidth in cheeselist):
-                cheeselist[cheeselist.index(mousepos+levelwidth)] = cheeselist[cheeselist.index(mousepos+levelwidth)]+levelwidth
-                mousepos = mousepos+levelwidth
-      if event.key == pygame.K_LEFT:
-        mousedir = 2
-        if not checblock("l",mousepos) == "error":
-          if checblock("l",mousepos) in emptyblock:
-            if mousepos-1 in cheeselist:
-              if checblock("l",mousepos-1) in emptyblock:
-                if not (mousepos-2 in cheeselist):
-                  cheeselist[cheeselist.index(mousepos-1)] = cheeselist[cheeselist.index(mousepos-1)]-1
-                  mousepos = mousepos-1
-            else:
-              mousepos = mousepos-1
-          elif mousepos-1 in cheeselist:
-            if checblock("l",mousepos-1) in emptyblock:
-              if not (mousepos-2 in cheeselist):
-                cheeselist[cheeselist.index(mousepos-1)] = cheeselist[cheeselist.index(mousepos-1)]-1
-                mousepos = mousepos-1
-      if event.key == pygame.K_RIGHT:
-        if reset:
+        if start or end:
+          pass
+        elif reset:
           reset = False
           paused = False
-          started = False
-          display_surface = pygame.display.set_mode((levelwidth*30,levelheight*30))
+          screen = pygame.display.set_mode((levelwidth*blocksize,levelheight*blocksize))
         else:
           mousedir = 0
-          if not checblock("r",mousepos) == "error":
-            if checblock("r",mousepos) in emptyblock:
-              if mousepos+1 in cheeselist:
-                if checblock("r",mousepos+1) in emptyblock:
-                  if not (mousepos+2 in cheeselist):
-                    cheeselist[cheeselist.index(mousepos+1)] = cheeselist[cheeselist.index(mousepos+1)]+1
-                    mousepos = mousepos+1
-              else:
-                mousepos = mousepos+1
-            elif mousepos+1 in cheeselist:
-              if checblock("r",mousepos+1) in emptyblock:
-                if not (mousepos+2 in cheeselist):
-                  cheeselist[cheeselist.index(mousepos+1)] = cheeselist[cheeselist.index(mousepos+1)]+1
-                  mousepos = mousepos+1
-      if event.key == pygame.K_RETURN:
-        paused = not paused
-        if started:
-          started = False
-          level += 1
-          setnewlevel(lvldict[level])
+          offset = mouseOffsets[mousedir]
+          blocked = checkBlock(mousepos,mousedir)
+          if blocked > 0:
+            mousepos = mousepos+offset
+            if blocked == 2:
+              cheeselist[cheeselist.index(mousepos)] += offset
+      if event.key == pygame.K_DOWN:
+        if start or end:
+          pass
+        elif reset:
+          reset = False
+          paused = False
+          screen = pygame.display.set_mode((levelwidth*blocksize,levelheight*blocksize))
         else:
-          if paused:
-            reset = True
-            X = 400
-            Y = 400
-            display_surface = pygame.display.set_mode((X,Y))
-            display_surface.fill(black)
-            display_surface.blit(reset_text, textRectr)
-            display_surface.blit(reset_text2, textRectr2)
-            display_surface.blit(reset_text3, textRectr3)
-          else:
-            if reset:
-              reset = False
-              paused = False
-              started = False
-            setnewlevel(lvldict[level])
-      if event.key == pygame.K_SPACE:
-        started = False
+          mousedir = 1
+          offset = mouseOffsets[mousedir]
+          blocked = checkBlock(mousepos,mousedir)
+          if blocked > 0:
+            mousepos = mousepos+offset
+            if blocked == 2:
+              cheeselist[cheeselist.index(mousepos)] += offset
+      if event.key == pygame.K_LEFT:
+        if start or end:
+          pass
+        elif reset:
+          reset = False
+          paused = False
+          screen = pygame.display.set_mode((levelwidth*blocksize,levelheight*blocksize))
+        else:
+          mousedir = 2
+          offset = mouseOffsets[mousedir]
+          blocked = checkBlock(mousepos,mousedir)
+          if blocked > 0:
+            mousepos = mousepos+offset
+            if blocked == 2:
+              cheeselist[cheeselist.index(mousepos)] += offset
+      if event.key == pygame.K_RIGHT:
+        if start or end:
+          pass
+        elif reset:
+          reset = False
+          paused = False
+          screen = pygame.display.set_mode((levelwidth*blocksize,levelheight*blocksize))
+        else:
+          mousedir = 3
+          offset = mouseOffsets[mousedir]
+          blocked = checkBlock(mousepos,mousedir)
+          if blocked > 0:
+            mousepos = mousepos+offset
+            if blocked == 2:
+              cheeselist[cheeselist.index(mousepos)] += offset
+      if event.key == pygame.K_RETURN:
+        if paused:
+          if start:
+            paused = False
+            start = False
+            updateLevel(lvldict[level])
+          if reset:
+            reset = False
+            paused = False
+            updateLevel(lvldict[level])
+          if end:
+            running = False
+            exit()
+        else:
+          reset = True
+          paused = True
+          drawPause()
+          
+      if event.key == pygame.K_SPACE and (not paused) and DEBUG:
         level += 1
-        print("level "+str(level+1)+" len = "+str(len(lvldict[level])))
-        setnewlevel(lvldict[level])
-      if checkifwon():
-        reset = False
-        paused = True
-        started = True
-        X = 400
-        Y = 400
-        display_surface = pygame.display.set_mode((X,Y))
-        display_surface.fill(black)
-        display_surface.blit(next_text, textRectn)
-        display_surface.blit(next_text2, textRectn2)
-    X,Y = display_surface.get_size()
-    drawscreen()
+        updateLevel(lvldict[level])
+      if checkWon() and (not paused):
+        if level == maxLevel:
+          paused = True
+          end = True
+          drawPause()
+        else:
+          paused = True
+          reset = True
+          level += 1
+          drawPause(True)
+    WIDTH,HEIGHT = screen.get_size()
+    drawScreen()
     pygame.display.update()
