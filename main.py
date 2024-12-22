@@ -58,7 +58,7 @@ pygame.display.set_caption("Cheese Terminator")
 pygame.display.set_icon(icon)
 
 currentLevel = 0
-endLevel = 4
+endLevel = 50
 paused = 1
 mouse = Mouse(0,0)
 cheese = []
@@ -91,7 +91,7 @@ start3 = Text("Use Arrow Keys To Move", (200, (200+18)), 20, textColour)
 next1 = Text("Well Done!", (200, (200-15)), 32, textColour)
 next2 = Text("Press Enter To Continue", (200, (200+15)), 20, textColour)
 win1 = Text("You Won!!! :D", (200, (200-15)), 32, textColour)
-win2 = Text("Press Enter To Play Again", (200, (200+15)), 20, textColour)
+win2 = Text("Press Enter To Close", (200, (200+15)), 20, textColour)
 reset1 = Text("Restart The Level?", (200, (200-30)), 32, textColour)
 reset2 = Text("Press Enter To Restart", (200, (200-3)), 20, textColour)
 reset3 = Text("Press Any Arrow Key To Cancel", (200, (200+18)), 20, textColour)
