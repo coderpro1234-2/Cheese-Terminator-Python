@@ -9,5 +9,5 @@ Taken from [The Microsoft Fandom](https://microsoft.fandom.com/wiki/Microsoft_Ch
 ## How Do I Play?
 Download and extract the cheeseTerminator.zip file from [here](https://github.com/coderpro1234-2/Cheese-Terminator-Python/releases/latest "Download Link"), and run the `main.py` file with `python3 main.py` in a command prompt.
 
-## Why Did You Take Over 3 Years To Finish This Game?
+## Why Did You Take Just Under 3 Year To Finish This Game?
 ¯\\\_(ツ)\_/¯
